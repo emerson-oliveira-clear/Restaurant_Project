@@ -1,5 +1,7 @@
 var express = require('express');
 var users = require('./../inc/users');
+var admin = require('./../inc/admin');
+var menus = require('./../inc/menus');
 var router = express.Router();
 
 router.use(function(req,res,next){
@@ -11,6 +13,16 @@ router.use(function(req,res,next){
     }
 
 })
+
+router.use(function(req,res,next){
+
+    req.menus = admin.getMenus(req);
+
+    next()
+
+});
+
+
 router.get('/logout', function(req,res,next){
 
     delete req.session.user;
@@ -21,7 +33,19 @@ router.get('/logout', function(req,res,next){
 
 router.get('/',function(req,res,next){
 
-    res.render('admin/index');
+    admin.dashboard().then(data =>{
+
+        res.render('admin/index',admin.getParams(req,{
+            data
+
+        }));
+
+    }).catch(err =>{
+
+        console.error(err)
+
+    })
+    
 
 })
 
@@ -60,32 +84,40 @@ router.get('/login',function(req,res,next){
 //------------------------
 router.get('/contacts',function(req,res,next){
 
-    res.render('admin/contacts')
+    res.render('admin/contacts',admin.getParams(req))
 })
 //------------------------
 router.get('/emails',function(req,res,next){
 
-    res.render('admin/emails')
+    res.render('admin/emails',admin.getParams(req))
 
 })
 //------------------------
 router.get('/menus',function(req,res,next){
 
-    res.render('admin/menus')
+    menus.getMenus().then(data =>{
+
+        res.render('admin/menus',admin.getParams(req,{
+
+            data
+    
+        }))
+
+    })
 
 })
 //------------------------
 router.get('/reservations',function(req,res,next){
 
-    res.render('admin/reservations',{
+    res.render('admin/reservations',admin.getParams(req, {
         date:{}
-    })
+    }))
 
 })
 //------------------------
 router.get('/users',function(req,res,next){
 
-    res.render('admin/users')
+    res.render('admin/users',admin.getParams(req))
 
 })
 
