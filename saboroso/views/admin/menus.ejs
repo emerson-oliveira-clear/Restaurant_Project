@@ -155,36 +155,54 @@
   <%- include('inc/footer') -%>
 
     <script src="/js/hcode-filereader.js"></script>
+    <script src="/js/hcode-formsave.js"></script>
+
 
     <script>
 
       new HcodeFileReader('#modal-create [type=file]', '#modal-create img')
-      new HcodeFileReader('#modal-update [type=file]', '#modal-update img')
+      //new HcodeFileReader('#modal-update [type=file]', '#modal-update img')
 
       let formCreate = document.querySelector('#modal-create form');
 
-      formCreate.addEventListener('submit', e => {
+      formCreate.save().then(json => {
+        window.location.reload()
+      }).catch(err => {
+        console.log(err)
+      })
+      //------------------------------------------------------
 
-        e.preventDefault();
 
-        let formCreateData = new FormData(formCreate);
+      //------------------------------------------------------
+      let formUpdate = document.querySelector('#modal-update form');
+      formUpdate.save().then(json => {
+        window.location.reload()
+      }).catch(err => {
+        console.log(err)
+      })
 
-        fetch('/admin/menus', {
-          method: 'POST',
-          body: formCreateData
-        })
-          .then(response => response.json())
-          .then(json => {
-
-            window.location.reload()
-
-          })
-
+      document.querySelectorAll('.btn-delete'). forEach(btn=>{
+          btn.addEventListener('click', e=>{
+            let tr = e.composedPath().find(el=>{
+              return (el.tagName.toUpperCase() === 'TR');
+            });
+            let data = JSON.parse(tr.dataset.row);
+            if(confirm(`Deseja excluir o menu ${data.title}`)){
+            console.log('data', data.id);
+            fetch(`/admin/menus/:${data.id}`, {
+              method: 'DELETE'
+            })
+              .then(response=> response.json())
+              .then(json=>{
+                console.log('json', json)
+                window.location.reload();
+              });
+            }
+          });
       });
 
 
-      let formUpdate = document.querySelector('#modal-update form');
-      [...document.querySelectorAll('.btn-update')].forEach(btn => {
+      document.querySelectorAll('.btn-update').forEach(btn => {
         btn.addEventListener('click', e => {
           let tr = e.composedPath().find(el => {
             return (el.tagName.toUpperCase() === 'TR');
@@ -194,7 +212,7 @@
             switch (name) {
               case 'photo':
 
-                formUpdate.querySelector('img').src = '/'+data[name]
+                formUpdate.querySelector('img').src = '/' + data[name]
                 break;
               default:
                 let input = formUpdate.querySelector(`[name=${name}]`);
@@ -204,5 +222,7 @@
           $(` #modal-update`).modal('show');
         });
       });
+
+
 
     </script>
