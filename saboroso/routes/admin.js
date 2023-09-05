@@ -124,8 +124,8 @@ router.post('/menus', function (req, res, next) {
 })
 
 router.delete('/menus/:id', function (req, res, next) {
-console.log('deu m aquiiiii',req.params.id)
-    menus.delete(req.params.id).then(results =>{
+
+    menus.delete(req.params.id[1]).then(results =>{
 
         res.send(results)
 
@@ -169,9 +169,9 @@ router.post('/reservations', function (req, res, next) {
 })
 
 router.delete('/reservations/:id', function (req, res, next) {
-    console.log('ggggggggggggggg',req.params.id)
+  
     reservations.delete(req.params.id[1]).then(results =>{
-        console.log('sdgfdgfdxbhxfgnbfgn')
+       
         res.send(results)
 
     }).catch (err => {

@@ -187,9 +187,9 @@
               return (el.tagName.toUpperCase() === 'TR');
             });
             let data = JSON.parse(tr.dataset.row);
-            if(confirm(`Deseja excluir o menu ${data.title}`)){
+            if(confirm(`Deseja excluir a reserva de ${data.name}`)){
             console.log('data', data.id);
-            fetch(`/admin/menus/:${data.id}`, {
+            fetch(`/admin/reservations/:${data.id}`, {
               method: 'DELETE'
             })
               .then(response=> response.json())
