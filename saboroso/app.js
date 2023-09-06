@@ -17,7 +17,7 @@ var app = express();
 
 app.use((req, res, next)=> {
 
-  if (req.method.toLocaleLowerCase() === 'post' && req.url !== '/admin/login'){
+  if (req.method.toLocaleLowerCase() === 'post'){
 
     var form = new formidable.IncomingForm({
       uploadDir: path.join(__dirname, "/public/images"),
