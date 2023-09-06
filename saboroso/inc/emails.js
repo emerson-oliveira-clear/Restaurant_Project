@@ -20,8 +20,8 @@ module.exports = {
     delete(id) {
 
         return new Promise((resolve, reject) => {
-    
-          conn.query('DELETE FROM tb_menus WHERE id = ?', [id], (err, results) => {
+          id = id.replace(':', "");
+          connection.query('DELETE FROM tb_emails WHERE id = ?', [id], (err, results) => {
     
             if (err) {
               reject(err);
