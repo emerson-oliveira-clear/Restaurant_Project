@@ -12,6 +12,7 @@ HTMLFormElement.prototype.save = function () {
 
             fetch(form.action, {
                 method: form.method,
+                credentials: 'include',
                 body: formData
             })
                 .then(response => response.json())

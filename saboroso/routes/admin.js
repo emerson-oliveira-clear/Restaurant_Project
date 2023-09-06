@@ -9,15 +9,30 @@ var contacts = require('./../inc/contacts');
 var emails = require('./../inc/emails');
 
 
+
 moment.locale('pt-BR')
 
 router.use(function (req, res, next) {
 
-    if (['/login'].indexOf(req.url) === -1 && !req.session.user) {
-        res.redirect('/admin/login');
-    } else {
-        next()
+console.log('chega aqqqqq 0000000')
+
+    try{
+
+        if (['/login'].indexOf(req.url) === -1 && !req.session.user) {
+
+            console.log('chega aqqqqq 11111111')
+            res.redirect('/admin/login');
+        } else {
+            console.log('chega aqqqqq 222222222')
+            next()
+        }
+
+
+    }catch(err){
+
+        console.log(err)
     }
+   
 
 })
 
@@ -267,6 +282,24 @@ router.delete('/users/:id', function (req, res, next) {
 
 })
 
+
+router.post('/users', function (req, res, next) {
+   
+    console.log('chega aqqqqq userrrs')
+
+    users.save(req.fields).then(results => {
+       
+        res.send(results)
+
+
+    }).catch(err => {
+       
+       console.log(err)
+
+    });
+
+
+})
 
 
 module.exports = router;

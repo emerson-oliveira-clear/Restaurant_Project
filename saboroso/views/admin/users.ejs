@@ -1,4 +1,4 @@
-<%- include('inc/header') -%>
+<%- include('inc/header') %>
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -34,7 +34,9 @@
               </tr>
             </thead>
             <tbody>
-              <% data.forEach(row=>{%>
+              <% data.forEach((row)=>{
+
+                %>
                 <tr data-row="<%= JSON.stringify(row) %>">
                   <td>
                     <%= row.id %>
@@ -45,10 +47,15 @@
                   <td>
                     <%= row.email %>
                   </td>
-
-                  <td><button type="button" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i>
-                      Excluir</button></td>
+                  <td>
+                    <button type="button" class="btn btn-xs btn-info"><i class="fa fa-pencil"></i> Editar</button>&nbsp;
+                    <button type="button" class="btn btn-xs btn-warning btn-update">
+                      <i class="fa fa-lock"></i> Alterar Senha</button>&nbsp;
+                    <button type="button" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i>
+                      Excluir</button>
+                  </td>
                 </tr>
+
                 <% }) %>
             </tbody>
           </table>
@@ -64,8 +71,10 @@
   <div class="modal fade" id="modal-update-password">
     <div class="modal-dialog">
       <div class="modal-content" style="border-top: 3px solid #f39c12;">
-        <form method="post">
-          <input type="hidden" name="id">
+        <form action='/admin/users' method="post">
+          <input id="idInputShow" type="hidden" name="id">
+          <input id="nameInputShow" type="hidden" name="name">
+          <input id="emailInputShow" type="hidden" name="email">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -96,7 +105,7 @@
   <div class="modal fade" id="modal-create">
     <div class="modal-dialog">
       <div class="modal-content" style="border-top: 3px solid #00a65a;">
-        <form method="post">
+        <form action="/admin/users" method="post">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -131,7 +140,7 @@
   <div class="modal fade" id="modal-update">
     <div class="modal-dialog">
       <div class="modal-content" style="border-top: 3px solid #00c0ef;">
-        <form method="post">
+        <form action="/admin/users" method="post">
           <input type="hidden" name="id">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -160,12 +169,43 @@
     <!-- /.modal-dialog -->
   </div>
 
+
   <%- include('inc/footer') -%>
+
+    <script src="/js/hcode-formsave.js"></script>
+
 
     <script>
 
+
+
+      let formUpdatePassword = document.querySelector('#modal-update-password form')
+
+      let formUpdate = document.querySelector('#modal-update form')
+
+      let formCreate = document.querySelector('#modal-create form')
+
+
+      formUpdatePassword.save().then(json => {
+        console.log('jsonnn', json)
+        window.location.reload()
+
+      })
+
+      formUpdate.save().then(json => {
+        console.log('jsonnn', json)
+        window.location.reload()
+      })
+
+      formCreate.save().then(json => {
+        console.log('jsonnn', json)
+
+      })
+
       document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.addEventListener('click', e => {
+
+
           let tr = e.composedPath().find(el => {
             return (el.tagName.toUpperCase() === 'TR');
           });
@@ -184,6 +224,90 @@
         });
       });
 
-    
+
+
+
+      document.querySelectorAll('.btn-update').forEach(btn => {
+        btn.addEventListener('click', e => {
+
+          console.log(e.composedPath())
+          let tr = e.composedPath().find(el => {
+
+            console.log(el.tagName)
+            return (el.tagName === 'TR');
+          });
+          let data = JSON.parse(tr.dataset.row);
+
+          for (let name in data) {
+            switch (name) {
+              case 'photo':
+
+                formUpdatePassword.querySelector('img').src = '/' + data[name]
+                break;
+              default:
+                let input = formUpdatePassword.querySelector(`[name=${name}]`);
+                if (input) input.value = data[name]
+            }
+          }
+          $(` #modal-update-password`).modal('show');
+
+        });
+      });
+
+      //update user info
+      document.querySelectorAll('.btn-info').forEach(btn => {
+
+        btn.addEventListener('click', e => {
+
+          console.log('composedPath0',e.composedPath())
+          let tr = e.composedPath().find(el => {
+
+            console.log('uiiiiiiiiiiiii',el)
+            if(el.tagName == 'TR'){
+
+              console.log('hhhhhhhhhhhhhh chegou',el.tagName)
+
+              return (el)
+
+            }
+            
+          })
+
+          let data = JSON.parse(tr.dataset.row)
+
+          console.log('data:', data)
+
+          for (const name in data) {
+
+
+            switch (name) {
+              case 'photo':
+                formUpdate.querySelector('img').src = '/' + data[name]
+                document.querySelector('#inputPhotoUpdate').dataset.filename = '/' + data[name];
+
+                break
+              case 'date': send
+                let dataday = data[name].split('-')
+                console.log('dataday split');
+                console.log(dataday)
+
+                let dataformatted = `${dataday[0]}-${dataday[1]}-${dataday[2].substr(0, 2)}`;
+                console.log('dataformated')
+                console.log(dataformatted)
+                document.querySelector('#inputDateUpdate').value = dataformatted
+                break
+
+              default:
+                let input = formUpdate.querySelector(`[name=${name}]`)
+                if (input) input.value = data[name];
+            }
+
+          }
+          $('#modal-update').modal('show')
+        })
+      })  
+
+
+
 
     </script>
