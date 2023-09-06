@@ -14,18 +14,15 @@ module.exports = {
             sucess
         });
     },
+
+
     save(fields) {
 
         return new Promise((resolve, reject) => {
 
-            if (fields.date.indexOf('/') > -1) {
-
-                let date = fields.date.split('/');
-
-                fields.date = `${date[2]}-${date[1]}-${date[0]}`
-
-
-            }
+            let date = fields.date.split('-');
+            console.log('DATE:', date)
+            fields.date = `${date[0]}-${date[1]}-${date[2]}`;
 
 
             let query, params = [
@@ -76,6 +73,8 @@ module.exports = {
             })
         })
     },
+
+    
     getReservations() {
 
         return new Promise((resolve, reject) => {
