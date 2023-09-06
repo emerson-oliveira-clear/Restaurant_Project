@@ -65,7 +65,7 @@
                     let data = JSON.parse(tr.dataset.row);
                     if (confirm(`Deseja excluir o email: ${data.email}`)) {
 
-                        fetch(`/admin/emails/:${data.email}`, {
+                        fetch(`/admin/emails/:${data.id}`, {
                             method: 'DELETE'
                         })
                             .then(response => response.json())
