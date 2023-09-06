@@ -1,5 +1,6 @@
 
 var conn = require('./db')
+const moment = require('moment')
 module.exports = {
 
     render(req,res,error){
@@ -104,6 +105,20 @@ module.exports = {
                 date = fields.date.split('-')
                 fields.date = `${date[0]}-${date[1]}-${date[2]}`;
             }
+            else{
+                console.log('Fields date nao existe')
+
+                console.log('new date:', moment(new Date()).format('YYYY-MM-DD'))
+                fields.date = moment(new Date()).format('YYYY-MM-DD')
+
+                date = new Date()
+                let hours = date.getHours();
+                let minutes =date.getMinutes();
+                let seconds = date.getSeconds()
+
+                fields.time = `${hours}-${minutes}-${seconds}`
+                console.log('Fields time:', fields.time)
+            }
 
             let query, params
             if (parseInt(fields.id) > 0) {
@@ -143,16 +158,12 @@ module.exports = {
 
                 query =
 
-                    `INSERT INTO tb_users (name  ,email,people,date,time)
-                VALUES(?,?,?,?,?)   
-               `
+                    `INSERT INTO tb_users (name, email, password, register) VALUES(?,?,?,?)`
                 params = [
                     fields.name,
                     fields.email,
-                    fields.people,
-                    fields.date,
-                    fields.time
-                
+                    fields.password,
+                    new Date()
                 ]
 
             }
